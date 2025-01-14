@@ -1,5 +1,5 @@
 local settings = {
-    MINWIDTH = 500,
+    MINWIDTH = 600,
     MINHEIGHT = 800,
 }
 

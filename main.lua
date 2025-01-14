@@ -2,36 +2,28 @@ love = require("love")
 require("obj/player")
 require("obj/button")
 
+GAME_SCALE = 3
+love.graphics.setDefaultFilter("nearest", "nearest", 1)
+local playBtn = love.graphics.newImage("assets/sprites/play_btn.png")
+local paddle = love.graphics.newImage("assets/sprites/cloudPaddle.png")
+
 function love.load()
     button = Button({
-        x = (love.graphics.getWidth() / 2) - (150 / 2),
+        x = love.graphics.getWidth() / 2 - (playBtn:getWidth() * GAME_SCALE) / 2,
         y = love.graphics.getHeight() / 2,
-        width = 150,
-        height = 40,
-        color = { r = 1, g = 0, b = 1, a = 1 },
 
-        text = "Play",
-        font = love.graphics.newFont(24),
-        textColor = { r = 0, g = 0, b = 0, a = 1 },
+        sprite = playBtn,
+        scale = GAME_SCALE,
 
-        onClick = function() print("Button clicked!") end,
-
-        onHover = function()
-            if button.hover() then
-                button.setColor({ r = 0, g = 1 })
-            else
-                button.setColor({ r = 1, g = 0 })
-            end
-        end
+        onClick = function() print("Button clicked!") end
     })
 
     player = Player({
-        x = love.graphics.getWidth() / 2 - 50,
+        x = love.graphics.getWidth() / 2 - (paddle:getWidth() * GAME_SCALE) / 2,
         y = love.graphics.getHeight() - 75,
-        width = 100,
-        height = 20,
         speed = 5,
-        color = { r = 1, g = 0, b = 1, a = 1 }
+        sprite = paddle,
+        scale = GAME_SCALE
     })
 end
 
