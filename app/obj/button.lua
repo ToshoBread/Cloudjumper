@@ -21,14 +21,13 @@ function Button(init)
     end
 
     function self.draw()
-        love.graphics.draw(sprite, x, y, 0, scale, scale)
+        love.graphics.draw(sprite, x, y)
     end
 
     function self.hover()
         local mouseX, mouseY = love.mouse.getPosition()
-        return mouseX >= x and mouseX <= x + (sprite:getWidth() * scale) and mouseY >= y and
-            mouseY <= y + (sprite:getHeight() * scale) and
-            true or false
+        return mouseX >= x and mouseX <= x + sprite:getWidth() and mouseY >= y and
+            mouseY <= y + sprite:getHeight()
     end
 
     return self

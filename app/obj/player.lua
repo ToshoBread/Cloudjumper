@@ -16,7 +16,7 @@ function Player(init)
     end
 
     function self.draw()
-        love.graphics.draw(sprite, x, y, 0, scale, scale)
+        love.graphics.draw(sprite, x, y, nil, scale, scale)
     end
 
     function self.move()
@@ -32,8 +32,8 @@ function Player(init)
         -- Left
         if x < 0 then x = 0 end
         -- Right
-        if x + (sprite:getWidth() * scale) > love.graphics.getWidth() then
-            x = love.graphics.getWidth() - (sprite:getWidth() * scale)
+        if x + (sprite:getWidth() * scale) > VIRTUAL_WIDTH then
+            x = VIRTUAL_WIDTH - (sprite:getWidth() * scale)
         end
     end
 
