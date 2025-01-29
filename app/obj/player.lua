@@ -39,3 +39,5 @@ function Player(init)
 
     return self
 end
+
+return Player

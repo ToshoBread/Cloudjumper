@@ -1,51 +1,54 @@
-love = require "love"
-push = require "lib/push"
-dir = require "dir"
-
 function love.load()
+    love = require "love"
+    push = require "lib/public/push"
+    res = require "res/dir"
+    stateManager = require "states/stateManager"
+
+    game = StateManager()
+    require "obj/button"
+
     WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
     WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5
     VIRTUAL_WIDTH, VIRTUAL_HEIGHT = 125, 225
 
     love.graphics.setDefaultFilter("nearest", "nearest") --? Removes Antialiasing
 
-    local playBtn = love.graphics.newImage(dir.playBtnSprite)
-    local paddle = love.graphics.newImage(dir.playerSprite)
+    font = love.graphics.newFont(18)
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = true
     })
 
-    button = Button({
-        x = VIRTUAL_WIDTH * 0.5 - playBtn:getWidth() * 0.5,
-        y = VIRTUAL_HEIGHT * 0.5,
-        sprite = playBtn,
-        onClick = function() print("Button clicked!") end
-    })
+    playBtnSprite = love.graphics.newImage(res.images.buttonSprite)
+    playBtn = Button({
+        x = VIRTUAL_WIDTH * 0.5 - (playBtnSprite:getWidth() * 0.5),
+        y = VIRTUAL_HEIGHT * 0.5 - (playBtnSprite:getHeight() * 0.5),
+        sprite = playBtnSprite,
 
-    player = Player({
-        x = VIRTUAL_WIDTH * 0.5 - paddle:getWidth() * 0.5,
-        y = VIRTUAL_HEIGHT - 25,
-        speed = 5,
-        sprite = paddle,
+        onClick = function()
+            if game.state.game then
+                game:changeState("menu")
+            else
+                game:changeState("game")
+            end
+        end
     })
-end
-
-function love.update(delta)
-    button.update()
-    player.update()
 end
 
 function love.resize(w, h)
     push:resize(w, h)
 end
 
+function love.update(delta)
+    playBtn.update()
+end
+
 function love.draw()
+    love.graphics.setFont(font)
+    love.graphics.print("State: " .. game:getState(), 0, 0)
+
     push:start()
-
-    button.draw()
-    player.draw()
-
+    playBtn.draw()
     push:finish()
 end
