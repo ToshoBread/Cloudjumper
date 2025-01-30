@@ -1,39 +1,25 @@
+love = require "love"
+push = require "lib.public.push"
+res = require "res.dir"
+scene = require "states.stateManager"
+
+
 function love.load()
-    love = require "love"
-    push = require "lib/public/push"
-    res = require "res/dir"
-    stateManager = require "states/stateManager"
-
-    game = StateManager()
-    require "obj/button"
-
     WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
     WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5
     VIRTUAL_WIDTH, VIRTUAL_HEIGHT = 125, 225
 
     love.graphics.setDefaultFilter("nearest", "nearest") --? Removes Antialiasing
 
-    font = love.graphics.newFont(18)
+    local FONT_SIZE = 18
+    FONT = love.graphics.newFont(FONT_SIZE)
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         fullscreen = false,
         resizable = true
     })
 
-    playBtnSprite = love.graphics.newImage(res.images.buttonSprite)
-    playBtn = Button({
-        x = VIRTUAL_WIDTH * 0.5 - (playBtnSprite:getWidth() * 0.5),
-        y = VIRTUAL_HEIGHT * 0.5 - (playBtnSprite:getHeight() * 0.5),
-        sprite = playBtnSprite,
-
-        onClick = function()
-            if game.state.game then
-                game:changeState("menu")
-            else
-                game:changeState("game")
-            end
-        end
-    })
+    scene:requireStates()
 end
 
 function love.resize(w, h)
@@ -41,14 +27,43 @@ function love.resize(w, h)
 end
 
 function love.update(delta)
-    playBtn.update()
+    if scene.state.menu then
+        menu.update()
+    elseif scene.state.game then
+        game.update()
+    end
+end
+
+function love.keypressed(key)
+    if not scene.state.menu and key == "escape" then
+        scene:changeState("menu")
+    end
+
+    if scene.state.game then
+        if key == "backspace" then
+            scene:changeState("lose")
+        end
+    end
+
+    if scene.state.lose then
+        if key == "return" then
+            scene:changeState("game")
+        end
+    end
 end
 
 function love.draw()
-    love.graphics.setFont(font)
-    love.graphics.print("State: " .. game:getState(), 0, 0)
+    love.graphics.setFont(FONT)
+    love.graphics.print("State: " .. scene:getState(), 0, 0)
 
     push:start()
-    playBtn.draw()
+    -- Draw here
+    if scene.state.menu then
+        menu.draw()
+    elseif scene.state.game then
+        game.draw()
+    elseif scene.state.lose then
+        lose.draw()
+    end
     push:finish()
 end

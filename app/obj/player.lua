@@ -3,12 +3,23 @@ function Player(init)
 
     local x = init.x or 0
     local y = init.y or 0
-    local speed = init.speed or 0
+    local speed = init.speed or 10
 
     local sprite = init.sprite
     local scale = init.scale or 1
 
     --& Class Methods
+
+    function self.collide()
+        -- Left
+        if x < 0 then x = 0 end
+        -- Right
+        if x + (sprite:getWidth() * scale) > VIRTUAL_WIDTH then
+            x = VIRTUAL_WIDTH - (sprite:getWidth() * scale)
+        end
+    end
+
+    --* Render Functions
 
     function self.update()
         self.move()
@@ -25,15 +36,6 @@ function Player(init)
         end
         if love.keyboard.isDown("d") then
             x = x + speed
-        end
-    end
-
-    function self.collide()
-        -- Left
-        if x < 0 then x = 0 end
-        -- Right
-        if x + (sprite:getWidth() * scale) > VIRTUAL_WIDTH then
-            x = VIRTUAL_WIDTH - (sprite:getWidth() * scale)
         end
     end
 
