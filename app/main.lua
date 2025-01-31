@@ -35,20 +35,16 @@ function love.update(delta)
 end
 
 function love.keypressed(key)
-    if not scene.state.menu and key == "escape" then
-        scene:changeState("menu")
+    if scene.state.game and key == "escape" then
+        scene:changeState("pause")
     end
 
-    if scene.state.game then
-        if key == "backspace" then
-            scene:changeState("lose")
-        end
+    if scene.state.game and key == "backspace" then
+        scene:changeState("lose")
     end
 
-    if scene.state.lose then
-        if key == "return" then
-            scene:changeState("game")
-        end
+    if scene.state.lose and key == "return" then
+        scene:changeState("game")
     end
 end
 
@@ -64,6 +60,8 @@ function love.draw()
         game.draw()
     elseif scene.state.lose then
         lose.draw()
+    elseif scene.state.pause then
+        pause.draw()
     end
     push:finish()
 end

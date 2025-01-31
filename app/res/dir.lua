@@ -3,7 +3,9 @@ local img = res .. "img/"
 Dir = {
     images = {
         playerSprite = img .. "cloudPaddle.png",
-        buttonSprite = img .. "playBtn.png",
+        playBtnSprite = img .. "playBtn.png",
+        settingsBtnSprite = img .. "settingsBtn.png",
+        exitBtnSprite = img .. "exitBtn.png"
     }
 }
 

@@ -43,11 +43,9 @@ function Button(init)
             else
                 clicked = false
             end
-        else
-            if hovered then
-                hovered = false
-                unHover()
-            end
+        elseif hovered then
+            hovered = false
+            unHover()
         end
     end
 
