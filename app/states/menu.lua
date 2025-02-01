@@ -8,7 +8,7 @@ local PLAY_BTN_SPRITE = love.graphics.newImage(res.images.playBtnSprite)
 local SETTINGS_BTN_SPRITE = love.graphics.newImage(res.images.settingsBtnSprite)
 local EXIT_BTN_SPRITE = love.graphics.newImage(res.images.exitBtnSprite)
 local MARGIN = 0.4
-local OFFSET = 20
+local OFFSET = 25
 
 local buttons = {
     playBtn = Button({

@@ -9,11 +9,11 @@ function Button(init)
     local sprite = init.sprite
     local scale = init.scale or 1
 
-    local onClick = init.onClick or function() print("No Click Function!") end
+    local onClick = init.onClick or function() end
 
-    local onHover = init.onHover or function() print("No Hover Function!") end
+    local onHover = init.onHover or function() end
 
-    local unHover = init.unHover or function() print("No Unhover Function!") end
+    local unHover = init.unHover or function() end
 
     --& Class Methods
 
@@ -23,6 +23,8 @@ function Button(init)
         return mouseX >= x and mouseX <= x + sprite:getWidth() and mouseY >= y and
             mouseY <= y + sprite:getHeight()
     end
+
+    function self:click() return love.mouse.isDown(RIGHT_MOUSE_BUTTON) end
 
     --* Render Functions
 
@@ -35,7 +37,7 @@ function Button(init)
                 hovered = true
                 onHover()
             end
-            if love.mouse.isDown(RIGHT_MOUSE_BUTTON) then
+            if self:click() then
                 if not clicked then
                     clicked = true
                     onClick()

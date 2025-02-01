@@ -1,4 +1,5 @@
 require "obj.player"
+require "obj.ball"
 
 scene:addState("game")
 
@@ -8,10 +9,11 @@ local PLAYER_SPRITE = love.graphics.newImage(res.images.playerSprite)
 
 local player = Player({
     x = VIRTUAL_WIDTH * 0.5 - (PLAYER_SPRITE:getWidth() * 0.5),
-    y = VIRTUAL_HEIGHT * 0.8 - (PLAYER_SPRITE:getHeight() * 0.5),
-    speed = 5,
+    y = VIRTUAL_HEIGHT * 0.95 - (PLAYER_SPRITE:getHeight() * 0.5),
+    speed = 2.5,
     sprite = PLAYER_SPRITE,
 })
+
 
 --* Render Functions
 game.update = function()

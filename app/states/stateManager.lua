@@ -17,9 +17,7 @@ StateManager = {
             self.state[key] = key == nextState
         end
 
-        for key, value in pairs(self.state) do
-            print(key, value)
-        end
+        print("\nChanging to: " .. self:getState())
     end,
 
     addState = function(self, newState)

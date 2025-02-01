@@ -5,7 +5,9 @@ Dir = {
         playerSprite = img .. "cloudPaddle.png",
         playBtnSprite = img .. "playBtn.png",
         settingsBtnSprite = img .. "settingsBtn.png",
-        exitBtnSprite = img .. "exitBtn.png"
+        exitBtnSprite = img .. "exitBtn.png",
+
+        particle = img .. "particle.png"
     }
 }
 
