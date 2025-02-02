@@ -41,7 +41,7 @@ function menu.update()
     for _, button in pairs(buttons) do button.update() end
 end
 
-local TOP = 0.7
+local TOP = 70
 local MARGIN = 15
 function menu.draw()
     local totalHeight = MARGIN
@@ -56,7 +56,7 @@ function menu.draw()
     totalHeight = (averageButtonHeight + MARGIN) * #buttons
 
     for _, button in ipairs(buttons) do
-        button:setY(VIRTUAL_HEIGHT * TOP - (totalHeight * 0.5) + offset)
+        button:setY(VIRTUAL_HEIGHT * (TOP / 100) - (totalHeight * 0.5) + offset)
         button.draw()
 
         offset = offset + (averageButtonHeight + MARGIN)

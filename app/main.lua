@@ -7,7 +7,7 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest") --? Removes Antialiasing
 
     WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
-    WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH * 0.5, WINDOW_HEIGHT * 0.5
+    WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH * 0.8, WINDOW_HEIGHT * 0.8
     VIRTUAL_WIDTH, VIRTUAL_HEIGHT = 185, 224
     OFFSCREEN = -100
 
@@ -21,16 +21,20 @@ function love.load()
     CURSOR_SIZE = 5
     drawCursor = function() love.graphics.circle("fill", mouseX, mouseY, CURSOR_SIZE) end
     cursorParticles = love.graphics.newParticleSystem(love.graphics.newImage(res.images.particle), 25)
-    cursorParticles:setParticleLifetime(1, 2)
+    cursorParticles:setParticleLifetime(1, 2.5)
     cursorParticles:setLinearAcceleration(-0.5, -0.5, 0.5, 0.5)
-    cursorParticles:setRotation(0, 360)
+    local opaqueToTransparent = function() return 1, 1, 1, 1, 1, 1, 1, 0 end
+    cursorParticles:setColors(opaqueToTransparent())
+    cursorParticles:setRotation(1, 360)
     cursorParticles:setSizes(0.5, 1, 1.2)
     cursorParticles:setSizeVariation(1)
-    emitCursorParticles = function() cursorParticles:emit(1) end
     cursorParticles:getEmitterLifetime(-1)
+    emitCursorParticles = function() cursorParticles:emit(1) end
 
     local FONT_SIZE = 20
     FONT = love.graphics.newFont(FONT_SIZE)
+
+    debugMode = false
 end
 
 function love.resize(w, h)
@@ -51,7 +55,7 @@ function love.update(delta)
         menu.update()
         emitCursorParticles()
     elseif scene.state.game then
-        game.update()
+        game.update(delta)
         cursorParticles:reset()
     elseif scene.state.pause then
         pause.update()
@@ -75,12 +79,23 @@ function love.keypressed(key)
     if scene.state.lose and key == "return" then
         scene:changeState("game")
     end
+
+    if key == "`" then
+        debugMode = not debugMode
+    end
 end
 
 function love.draw()
     love.graphics.setFont(FONT)
-    love.graphics.print("State: " .. scene:getState(), 0, 0)
-    love.graphics.print(string.format("X:%d\tY:%d", mouseX, mouseY), 0, 50)
+
+    --^ Debug Mode
+    if debugMode then
+        love.graphics.print("State: " .. scene:getState(), 0, 0)
+        love.graphics.print(string.format("Mouse Pos.\nX:%d\tY:%d", mouseX, mouseY), 0, 50)
+        if scene.state.game then
+            game.debug()
+        end
+    end
 
     push:start()
     -- Draw here

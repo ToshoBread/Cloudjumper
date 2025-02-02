@@ -28,6 +28,22 @@ function Player(init)
         end
     end
 
+    function self:getX()
+        return x
+    end
+
+    function self:getY()
+        return y
+    end
+
+    function self:getSpriteDimensions()
+        return sprite:getWidth(), sprite:getHeight()
+    end
+
+    function self:getScale()
+        return scale
+    end
+
     --* Render Functions
 
     function self.update()
@@ -37,6 +53,11 @@ function Player(init)
 
     function self.draw()
         love.graphics.draw(sprite, x, y, nil, scale, scale)
+    end
+
+    --^ Debug Functions
+    function self.debug()
+        love.graphics.print(string.format("Player Pos.\nX:%d\tY:%d", x, y), 0, 300)
     end
 
     return self

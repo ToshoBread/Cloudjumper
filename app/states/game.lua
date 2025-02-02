@@ -14,14 +14,30 @@ local player = Player({
     sprite = PLAYER_SPRITE,
 })
 
+local ball = Ball({
+    x = VIRTUAL_WIDTH * 0.5,
+    y = VIRTUAL_WIDTH * 0.5,
+    acceleration = 4,
+    scale = 8
+})
+
 
 --* Render Functions
-game.update = function()
+game.update = function(delta)
     player.update()
+    ball.update(delta, player)
 end
 
 game.draw = function()
     player.draw()
+    ball.draw()
+    love.graphics.setFont(love.graphics.newFont(12))
+end
+
+--^ Debug Functions
+function game.debug()
+    player.debug()
+    ball.debug()
 end
 
 return game
