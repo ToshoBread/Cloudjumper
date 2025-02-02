@@ -3,6 +3,7 @@ local RIGHT_MOUSE_BUTTON = 1
 function Button(init)
     local self = {}
 
+    local id = init.id or ""
     local x = init.x or 0
     local y = init.y or 0
 
@@ -11,9 +12,9 @@ function Button(init)
 
     local onClick = init.onClick or function() end
 
-    local onHover = init.onHover or function() end
+    local onHover = init.onHover or function() print("No Hover Function!") end
 
-    local unHover = init.unHover or function() end
+    local unHover = init.unHover or function() print("No Unhover Function!") end
 
     --& Class Methods
 
@@ -25,6 +26,16 @@ function Button(init)
     end
 
     function self:click() return love.mouse.isDown(RIGHT_MOUSE_BUTTON) end
+
+    function self:getID() return id end
+
+    function self:getPosition() return x, y end
+
+    function self:getSprite() return sprite end
+
+    function self:getY() return y end
+
+    function self:setY(newY) y = newY end
 
     --* Render Functions
 

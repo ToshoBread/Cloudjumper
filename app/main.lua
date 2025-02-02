@@ -80,6 +80,7 @@ end
 function love.draw()
     love.graphics.setFont(FONT)
     love.graphics.print("State: " .. scene:getState(), 0, 0)
+    love.graphics.print(string.format("X:%d\tY:%d", mouseX, mouseY), 0, 50)
 
     push:start()
     -- Draw here

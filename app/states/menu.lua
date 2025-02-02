@@ -7,46 +7,59 @@ menu = {}
 local PLAY_BTN_SPRITE = love.graphics.newImage(res.images.playBtnSprite)
 local SETTINGS_BTN_SPRITE = love.graphics.newImage(res.images.settingsBtnSprite)
 local EXIT_BTN_SPRITE = love.graphics.newImage(res.images.exitBtnSprite)
-local MARGIN = 0.4
-local OFFSET = 25
 
-local buttons = {
-    playBtn = Button({
-        x = VIRTUAL_WIDTH * 0.5 - (PLAY_BTN_SPRITE:getWidth() * 0.5),
-        y = VIRTUAL_HEIGHT * MARGIN - (PLAY_BTN_SPRITE:getHeight() * 0.5),
-        sprite = PLAY_BTN_SPRITE,
+local buttons = {}
 
-        onClick = function() scene:changeState("game") end
-    }),
+table.insert(buttons, 1, Button({
+    id = "play",
+    x = VIRTUAL_WIDTH * 0.5 - (PLAY_BTN_SPRITE:getWidth() * 0.5),
+    sprite = PLAY_BTN_SPRITE,
 
-    settingsBtn = Button({
-        x = VIRTUAL_WIDTH * 0.5 - (SETTINGS_BTN_SPRITE:getWidth() * 0.5),
-        y = VIRTUAL_HEIGHT * MARGIN - (SETTINGS_BTN_SPRITE:getHeight() * 0.5) + OFFSET,
-        sprite = SETTINGS_BTN_SPRITE,
 
-        onClick = function() print("Settings") end
-    }),
+    onClick = function() scene:changeState("game") end
+}))
 
-    exitBtn = Button({
-        x = VIRTUAL_WIDTH * 0.5 - (EXIT_BTN_SPRITE:getWidth() * 0.5),
-        y = VIRTUAL_HEIGHT * MARGIN - (EXIT_BTN_SPRITE:getHeight() * 0.5) + OFFSET * 2,
-        sprite = EXIT_BTN_SPRITE,
+table.insert(buttons, 2, Button({
+    id = "settings",
+    x = VIRTUAL_WIDTH * 0.5 - (SETTINGS_BTN_SPRITE:getWidth() * 0.5),
+    sprite = SETTINGS_BTN_SPRITE,
 
-        onClick = function() love.event.quit() end
-    })
-}
+    onClick = function() print("Settings") end
+}))
+
+table.insert(buttons, 3, Button({
+    id = "exit",
+    x = VIRTUAL_WIDTH * 0.5 - (EXIT_BTN_SPRITE:getWidth() * 0.5),
+    sprite = EXIT_BTN_SPRITE,
+
+    onClick = function() love.event.quit() end
+}))
 
 --* Render Functions
 
-menu.update = function()
-    for _, button in pairs(buttons) do
-        button.update()
-    end
+function menu.update()
+    for _, button in pairs(buttons) do button.update() end
 end
 
-menu.draw = function()
-    for _, button in pairs(buttons) do
+local TOP = 0.7
+local MARGIN = 15
+function menu.draw()
+    local totalHeight = MARGIN
+    local averageButtonHeight = 0
+    local offset = 0
+
+    for _, button in ipairs(buttons) do
+        averageButtonHeight = averageButtonHeight + button:getSprite():getHeight()
+    end
+
+    averageButtonHeight = averageButtonHeight / #buttons
+    totalHeight = (averageButtonHeight + MARGIN) * #buttons
+
+    for _, button in ipairs(buttons) do
+        button:setY(VIRTUAL_HEIGHT * TOP - (totalHeight * 0.5) + offset)
         button.draw()
+
+        offset = offset + (averageButtonHeight + MARGIN)
     end
 end
 
