@@ -1,13 +1,14 @@
 local STATES_PATH = "states."
 
-StateManager = {}
-state = {}
+StateManager = {
+    state = {}
+}
 
 function StateManager:requireStates()
     local files = love.filesystem.getDirectoryItems(STATES_PATH)
     for _, file in ipairs(files) do
         if file:match("%.lua$") then
-            require(STATES_PATH .. file:sub(1, -5))     -- Remove the .lua extension
+            require(STATES_PATH .. file:sub(1, -5)) -- Remove the .lua extension
         end
     end
 end
