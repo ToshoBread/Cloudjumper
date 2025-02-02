@@ -10,8 +10,8 @@ local PLAYER_SPRITE = love.graphics.newImage(res.images.playerSprite)
 local player = Player({
     x = VIRTUAL_WIDTH * 0.5 - (PLAYER_SPRITE:getWidth() * 0.5),
     y = VIRTUAL_HEIGHT * 0.95 - (PLAYER_SPRITE:getHeight() * 0.5),
-    speed = 2.5,
-    sprite = PLAYER_SPRITE,
+    speed = 2,
+    sprite = PLAYER_SPRITE
 })
 
 local ball = Ball({
@@ -24,13 +24,13 @@ local ball = Ball({
 
 --* Render Functions
 game.update = function(delta)
-    player.update()
-    ball.update(delta, player)
+    player.update(delta)
+    ball.update(delta)
 end
 
 game.draw = function()
-    player.draw()
     ball.draw()
+    player.draw()
     love.graphics.setFont(love.graphics.newFont(12))
 end
 

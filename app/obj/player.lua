@@ -3,27 +3,34 @@ function Player(init)
 
     local x = init.x or 0
     local y = init.y or 0
-    local speed = init.speed or 1
+    local speed = (init.speed or 1) * 100
 
     local sprite = init.sprite
     local scale = init.scale or 1
 
+    local hitbox = {}
+
     --& Class Methods
 
-    function self:move()
+    function self:move(delta)
         if love.keyboard.isDown("a") then
-            x = x - speed
+            x = x - speed * delta
         end
         if love.keyboard.isDown("d") then
-            x = x + speed
+            x = x + speed * delta
         end
     end
 
-    function self:collide()
-        -- Left
-        if x < 0 then x = 0 end
-        -- Right
-        if x + (sprite:getWidth() * scale) > VIRTUAL_WIDTH then
+    function self:collide(delta)
+        hitbox.left = x - scale
+        hitbox.right = x + (sprite:getWidth() * scale)
+        hitbox.top = y - scale
+        hitbox.bottom = y + (sprite:getHeight() * scale)
+
+        -- Left Boundary
+        if hitbox.left < 0 then x = 0 end
+        -- Right Boundary
+        if hitbox.right > VIRTUAL_WIDTH then
             x = VIRTUAL_WIDTH - (sprite:getWidth() * scale)
         end
     end
@@ -36,8 +43,8 @@ function Player(init)
         return y
     end
 
-    function self:getSpriteDimensions()
-        return sprite:getWidth(), sprite:getHeight()
+    function self:getHitbox()
+        return hitbox.left, hitbox.right, hitbox.top, hitbox.bottom
     end
 
     function self:getScale()
@@ -46,9 +53,9 @@ function Player(init)
 
     --* Render Functions
 
-    function self.update()
-        self:move()
-        self:collide()
+    function self.update(delta)
+        self:move(delta)
+        self:collide(delta)
     end
 
     function self.draw()

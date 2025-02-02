@@ -52,13 +52,13 @@ function love.update(delta)
     cursorParticles:update(delta)
 
     if scene.state.menu then
-        menu.update()
+        menu.update(delta)
         emitCursorParticles()
     elseif scene.state.game then
         game.update(delta)
         cursorParticles:reset()
     elseif scene.state.pause then
-        pause.update()
+        pause.update(delta)
         emitCursorParticles()
     end
 end

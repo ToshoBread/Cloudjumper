@@ -8,6 +8,8 @@ function Ball(init)
     local velocity = vector.new(0, 0)
     local acceleration = init.acceleration or 1
 
+    local hitbox = {}
+
     local scale = init.scale or 1
 
     --& Class Methods
@@ -31,33 +33,29 @@ function Ball(init)
         x, y = x + velocity.x, y + velocity.y
     end
 
-    ---@param player1 table Player Object
-    function self:collide(player1)
-        playerSpriteWidth, playerSpriteHeight = player1:getSpriteDimensions()
-        -- Left
-        if x < 0 then
-            x = 0
+    function self:collide(delta)
+        hitbox.left = x - scale
+        hitbox.right = x + scale
+        hitbox.top = y - scale
+        hitbox.bottom = y + scale
+        -- Left Boundary
+        if hitbox.left < 0 then
+            -- x = 0
             velocity.x = -velocity.x
         end
-        -- Right
-        if x > VIRTUAL_WIDTH then
-            x = VIRTUAL_WIDTH
+        -- Right Boundary
+        if hitbox.right > VIRTUAL_WIDTH then
+            -- x = VIRTUAL_WIDTH
             velocity.x = -velocity.x
         end
-        -- Up
-        if y < 0 then
-            y = 0
+        -- Top Boundary
+        if hitbox.top < 0 then
+            -- y = 0
             velocity.y = -velocity.y
         end
-        -- Down
-        if y > VIRTUAL_HEIGHT + 50 then
-            y = VIRTUAL_HEIGHT
-            velocity.y = -velocity.y
-        end
-        if y >= player1:getY() and y <= player1:getY() + playerSpriteHeight and x >= player1:getX() and x <= player1:getX() + playerSpriteWidth then
-            if x >= player1:getX() or x <= player1:getX() + playerSpriteWidth then
-                velocity.x = -velocity.x
-            end
+        -- Bottom Boundary
+        if hitbox.bottom > VIRTUAL_HEIGHT + 50 then
+            -- y = VIRTUAL_HEIGHT
             velocity.y = -velocity.y
         end
     end
@@ -66,16 +64,20 @@ function Ball(init)
         return x, y
     end
 
+    function self:getHitbox()
+        return hitbox.left, hitbox.right, hitbox.top, hitbox.bottom
+    end
+
     --* Render Functions
 
     function self.update(delta, player1)
         self:move(delta)
-        self:collide(player1)
+        self:collide(delta)
     end
 
     function self.draw()
         love.graphics.setColor(255, 255, 255)
-        love.graphics.circle("fill", x, y, scale, scale)
+        love.graphics.circle("fill", x, y, scale)
     end
 
     --^ Debug Functions

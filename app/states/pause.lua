@@ -19,13 +19,13 @@ local buttons = {
 
 --* Render Functions
 
-pause.update = function()
+function pause.update(delta)
     for _, button in pairs(buttons) do
         button.update()
     end
 end
 
-pause.draw = function()
+function pause.draw()
     for _, button in pairs(buttons) do
         button.draw()
     end

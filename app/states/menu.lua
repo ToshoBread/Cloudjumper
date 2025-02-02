@@ -37,7 +37,7 @@ table.insert(buttons, 3, Button({
 
 --* Render Functions
 
-function menu.update()
+function menu.update(delta)
     for _, button in pairs(buttons) do button.update() end
 end
 
