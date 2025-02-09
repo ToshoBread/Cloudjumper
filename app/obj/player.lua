@@ -9,6 +9,8 @@ function Player(init)
     local sprite = init.sprite
     local scale = init.scale or 1
 
+    local keybinds = init.keybinds or { left = "a", right = "d" }
+
     local hitbox = {
         left = x,
         right = x + (sprite:getWidth() * scale),
@@ -19,10 +21,10 @@ function Player(init)
     --& Class Methods
 
     local function move(delta)
-        if love.keyboard.isDown("a") then
+        if love.keyboard.isDown(keybinds.left) then
             -- x = x - speed * delta
             velocity.x = -1
-        elseif love.keyboard.isDown("d") then
+        elseif love.keyboard.isDown(keybinds.right) then
             -- x = x + speed * delta
             velocity.x = 1
         else

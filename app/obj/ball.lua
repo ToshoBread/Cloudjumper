@@ -17,20 +17,20 @@ function Ball(init)
 
     local function move(delta)
         local deltAcceleration = acceleration * delta
-        if debugMode then
-            if love.keyboard.isDown("up") then
-                velocity.y = velocity.y - deltAcceleration
-            end
-            if love.keyboard.isDown("down") then
-                velocity.y = velocity.y + deltAcceleration
-            end
-            if love.keyboard.isDown("left") then
-                velocity.x = velocity.x - deltAcceleration
-            end
-            if love.keyboard.isDown("right") then
-                velocity.x = velocity.x + deltAcceleration
-            end
-        end
+        -- if debugMode then
+        --     if love.keyboard.isDown("up") then
+        --         velocity.y = velocity.y - deltAcceleration
+        --     end
+        --     if love.keyboard.isDown("down") then
+        --         velocity.y = velocity.y + deltAcceleration
+        --     end
+        --     if love.keyboard.isDown("left") then
+        --         velocity.x = velocity.x - deltAcceleration
+        --     end
+        --     if love.keyboard.isDown("right") then
+        --         velocity.x = velocity.x + deltAcceleration
+        --     end
+        -- end
 
         x, y = x + velocity.x * deltAcceleration * delta, y + velocity.y * deltAcceleration * delta
     end
@@ -53,20 +53,15 @@ function Ball(init)
             x = VIRTUAL_WIDTH - scale
             velocity.x = -velocity.x
         end
-        -- Top Boundary
-        if hitbox.top < 0 then
-            y = 0 + scale
-            velocity.y = -velocity.y
-        end
-        -- Bottom Boundary
-        if hitbox.top > VIRTUAL_HEIGHT + 16 then
+        -- Top and Bottom Boundary
+        if (hitbox.bottom < 0 - 16) or (hitbox.top > VIRTUAL_HEIGHT + 16) then
             self:resetBall()
         end
     end
 
     local function randomVelocity(m, n)
         random = math.random(math.random(m, n), math.random(m, n))
-        if random < -1 or random > 1 then return random end
+        if random < -10 or random > 10 then return random end
         return randomVelocity(math.random(m, n), math.random(m, n))
     end
 
