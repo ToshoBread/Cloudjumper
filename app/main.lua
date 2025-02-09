@@ -1,6 +1,7 @@
 love = require "love"
 push = require "lib.public.push"
 res = require "res.dir"
+vector = require "lib.public.vector"
 scene = require "states.stateManager"
 
 function love.load()
@@ -8,7 +9,7 @@ function love.load()
 
     WINDOW_WIDTH, WINDOW_HEIGHT = love.window.getDesktopDimensions()
     WINDOW_WIDTH, WINDOW_HEIGHT = WINDOW_WIDTH * 0.8, WINDOW_HEIGHT * 0.8
-    VIRTUAL_WIDTH, VIRTUAL_HEIGHT = 185, 224
+    VIRTUAL_WIDTH, VIRTUAL_HEIGHT = 211, 224
     OFFSCREEN = -100
 
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
@@ -37,9 +38,7 @@ function love.load()
     debugMode = false
 end
 
-function love.resize(w, h)
-    push:resize(w, h)
-end
+function love.resize(w, h) push:resize(w, h) end
 
 function love.update(delta)
     mouseX, mouseY = push:toGame(love.mouse.getPosition())
@@ -92,7 +91,7 @@ function love.draw()
     if debugMode then
         love.graphics.print("State: " .. scene:getState(), 0, 0)
         love.graphics.print(string.format("Mouse Pos.\nX:%d\tY:%d", mouseX, mouseY), 0, 50)
-        if scene.state.game then
+        if scene.state.game or scene.state.pause then
             game.debug()
         end
     end

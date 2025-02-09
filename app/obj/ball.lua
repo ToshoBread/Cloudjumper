@@ -1,5 +1,3 @@
-local vector = require "lib.public.vector"
-
 function Ball(init)
     local self = {}
 
@@ -8,13 +6,16 @@ function Ball(init)
     local velocity = vector.new(0, 0)
     local acceleration = init.acceleration or 1
 
-    local hitbox = {}
-
     local scale = init.scale or 1
+
+    local hitbox = {}
+    hitbox.left = x - scale
+    hitbox.right = x + scale
+    hitbox.bottom = y + scale
 
     --& Class Methods
 
-    function self:move(delta)
+    local function move(delta)
         local deltAcceleration = acceleration * delta
         if debugMode then
             if love.keyboard.isDown("up") then
@@ -30,49 +31,77 @@ function Ball(init)
                 velocity.x = velocity.x + deltAcceleration
             end
         end
-        x, y = x + velocity.x, y + velocity.y
+
+        x, y = x + velocity.x * deltAcceleration * delta, y + velocity.y * deltAcceleration * delta
     end
 
-    function self:collide(delta)
+    local function updateHitbox()
         hitbox.left = x - scale
         hitbox.right = x + scale
         hitbox.top = y - scale
         hitbox.bottom = y + scale
+    end
+
+    local function collideWithBounds(delta)
         -- Left Boundary
         if hitbox.left < 0 then
-            -- x = 0
+            x = 0 + scale
             velocity.x = -velocity.x
         end
         -- Right Boundary
         if hitbox.right > VIRTUAL_WIDTH then
-            -- x = VIRTUAL_WIDTH
+            x = VIRTUAL_WIDTH - scale
             velocity.x = -velocity.x
         end
         -- Top Boundary
         if hitbox.top < 0 then
-            -- y = 0
+            y = 0 + scale
             velocity.y = -velocity.y
         end
         -- Bottom Boundary
-        if hitbox.bottom > VIRTUAL_HEIGHT + 50 then
-            -- y = VIRTUAL_HEIGHT
-            velocity.y = -velocity.y
+        if hitbox.top > VIRTUAL_HEIGHT + 16 then
+            self:resetBall()
         end
     end
 
-    function self:getPosition()
-        return x, y
+    local function randomVelocity(m, n)
+        random = math.random(math.random(m, n), math.random(m, n))
+        if random < -1 or random > 1 then return random end
+        return randomVelocity(math.random(m, n), math.random(m, n))
     end
 
-    function self:getHitbox()
-        return hitbox.left, hitbox.right, hitbox.top, hitbox.bottom
+    function self:resetBall()
+        x, y = init.x, init.y
+        velocity.x = randomVelocity(-50, 50)
+        velocity.y = randomVelocity(-50, 50)
     end
+
+    function self:setX(newX) x = newX end
+
+    function self:getY() return y end
+
+    function self:setY(newY) y = newY end
+
+    function self:getHeight() return scale end
+
+    function self:getPosition() return x, y end
+
+    function self:getHitbox() return hitbox.left, hitbox.right, hitbox.top, hitbox.bottom end
+
+    function self:getVector() return velocity.x, velocity.y end
+
+    function self:setVelocity(newVelX, newVelY) velocity.x, velocity.y = newVelX, newVelY end
 
     --* Render Functions
 
-    function self.update(delta, player1)
-        self:move(delta)
-        self:collide(delta)
+    function self.update(delta)
+        move(delta)
+        updateHitbox()
+        collideWithBounds(delta)
+
+        if love.keyboard.isDown("r") or (velocity == vector.new(0, 0)) then
+            self:resetBall()
+        end
     end
 
     function self.draw()
