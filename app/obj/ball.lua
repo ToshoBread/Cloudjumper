@@ -17,22 +17,9 @@ function Ball(init)
 
     local function move(delta)
         local deltAcceleration = acceleration * delta
-        -- if debugMode then
-        --     if love.keyboard.isDown("up") then
-        --         velocity.y = velocity.y - deltAcceleration
-        --     end
-        --     if love.keyboard.isDown("down") then
-        --         velocity.y = velocity.y + deltAcceleration
-        --     end
-        --     if love.keyboard.isDown("left") then
-        --         velocity.x = velocity.x - deltAcceleration
-        --     end
-        --     if love.keyboard.isDown("right") then
-        --         velocity.x = velocity.x + deltAcceleration
-        --     end
-        -- end
 
-        x, y = x + velocity.x * deltAcceleration * delta, y + velocity.y * deltAcceleration * delta
+        x = x + velocity.x * deltAcceleration * delta
+        y = y + velocity.y * deltAcceleration * delta
     end
 
     local function updateHitbox()

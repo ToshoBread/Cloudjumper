@@ -67,8 +67,7 @@ local function paddleBounce(delta)
     local ballVelX, ballVelY = ball:getVelocity()
 
     if checkCollision(ball, player1) or checkCollision(ball, player2) then
-        if
-        -- Checks if the ball hits a moving paddle
+        if -- Checks if the ball hits a moving paddle
             checkVelocityCollision(ball, player1) or checkVelocityCollision(ball, player2)
             -- Checks if the ball hits a paddle's corner
             or checkCornerCollision(ball, player1) or checkCornerCollision(ball, player2)
@@ -104,10 +103,10 @@ end
 local function scoreIncrement(delta)
     local _, _, ballTop, ballBottom = ball:getHitbox()
 
-    if ballTop < -16 then -- Upper bounds
+    if ballBottom < -16 then -- Upper bounds
         player2Score = player2Score + 1
         ball:resetBall()
-    elseif ballBottom > VIRTUAL_HEIGHT + 16 then -- Lower Bounds
+    elseif ballTop > VIRTUAL_HEIGHT + 16 then -- Lower bounds
         player1Score = player1Score + 1
         ball:resetBall()
     end
