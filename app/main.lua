@@ -53,6 +53,9 @@ function love.update(delta)
     if scene.state.menu then
         menu.update(delta)
         emitCursorParticles()
+    elseif scene.state.pregame then
+        pregame.update(delta)
+        emitCursorParticles()
     elseif scene.state.game then
         game.update(delta)
         cursorParticles:reset()
@@ -95,6 +98,7 @@ function love.draw()
             game.debug()
         end
     end
+    --^----------------------------
 
     push:start()
     -- Draw here
@@ -107,6 +111,9 @@ function love.draw()
     if scene.state.menu then
         menu.draw()
         drawCursor()
+    elseif scene.state.pregame then
+        pregame.draw()
+        drawCursor()
     elseif scene.state.game or scene.state.pause then
         game.draw()
         if scene.state.pause then
@@ -115,6 +122,12 @@ function love.draw()
         end
     elseif scene.state.lose then
         lose.draw()
+    end
+
+    if debugMode then
+        love.graphics.setColor(255, 255, 255, 0.8)
+        love.graphics.line(VIRTUAL_WIDTH * 0.5, 0, VIRTUAL_WIDTH * 0.5, VIRTUAL_HEIGHT)
+        love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
     end
     push:finish()
 end

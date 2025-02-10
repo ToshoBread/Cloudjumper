@@ -7,6 +7,9 @@ Dir = {
         settingsBtnSprite = img .. "settingsBtn.png",
         exitBtnSprite = img .. "exitBtn.png",
 
+        selectorLeftSprite = img .. "selectorLeft.png",
+        selectorRightSprite = img .. "selectorRight.png",
+
         particle = img .. "particle.png"
     }
 }

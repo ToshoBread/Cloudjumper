@@ -15,8 +15,7 @@ table.insert(buttons, Button({
     x = VIRTUAL_WIDTH * 0.5 - (PLAY_BTN_SPRITE:getWidth() * 0.5),
     sprite = PLAY_BTN_SPRITE,
 
-
-    onClick = function() scene:changeState("game") end
+    onClick = function() scene:changeState("pregame") end
 }))
 
 table.insert(buttons, Button({
