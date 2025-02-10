@@ -7,6 +7,9 @@ game = {}
 
 local PLAYER_SPRITE = love.graphics.newImage(res.images.playerSprite)
 
+local singleplayer = true
+local playerSpeed = 1.25
+
 local ball = Ball({
     x = VIRTUAL_WIDTH * 0.5,
     y = VIRTUAL_WIDTH * 0.5,
@@ -17,7 +20,7 @@ local ball = Ball({
 local player1 = Player({
     x = VIRTUAL_WIDTH * 0.5 - (PLAYER_SPRITE:getWidth() * 0.5),
     y = VIRTUAL_HEIGHT * 0.95 - (PLAYER_SPRITE:getHeight() * 0.5),
-    speed = 1.5,
+    speed = playerSpeed,
     sprite = PLAYER_SPRITE,
     keybinds = { left = "a", right = "d" }
 })
@@ -25,7 +28,7 @@ local player1 = Player({
 local player2 = Player({
     x = VIRTUAL_WIDTH * 0.5 - (PLAYER_SPRITE:getWidth() * 0.5),
     y = VIRTUAL_HEIGHT * 0.05 - (PLAYER_SPRITE:getHeight() * 0.5),
-    speed = 1.5,
+    speed = playerSpeed,
     sprite = PLAYER_SPRITE,
     keybinds = { left = "left", right = "right" }
 })
@@ -39,13 +42,7 @@ local function checkCollision(a, b)
         and aBottom > bTop
 end
 
---* Render Functions
-
-function game.update(delta)
-    ball.update(delta)
-    player1.update(delta)
-    player2.update(delta)
-
+local function paddleBounce(delta)
     local ballVelX, ballVelY = ball:getVector()
     local player1VelX, _ = player1:getVelocity()
     local player2VelX, _ = player2:getVelocity()
@@ -65,6 +62,37 @@ function game.update(delta)
     end
 end
 
+local function autoPilot(delta)
+    local ballX, ballY = ball:getPosition()
+    local player2X = player2:getX()
+    local player2VelX, _ = player2:getVelocity()
+
+    if ballY > VIRTUAL_HEIGHT * 0.5 then
+        player2:setVelocity(0, 0)
+    elseif ballX < player2X - 8 then
+        player2:setVelocity(-1, 0)
+    elseif ballX > player2X + player2:getWidth() + 8 then
+        player2:setVelocity(1, 0)
+    end
+end
+
+--* Render Functions
+
+function game.update(delta)
+    ball.update(delta)
+    player1.update(delta)
+    player2.update(delta)
+
+    paddleBounce(delta)
+
+    player1:control(delta)
+    if singleplayer then
+        autoPilot(delta)
+    else
+        player2:control(delta)
+    end
+end
+
 function game.draw()
     ball.draw()
     player1.draw()
@@ -75,6 +103,11 @@ end
 function game.debug()
     player1.debug()
     ball.debug()
+
+    if love.keyboard.isDown("p") then singleplayer = not singleplayer end
+    love.graphics.setFont(FONT)
+    local mode = singleplayer and "Singleplayer" or "Multiplayer"
+    love.graphics.print("Mode: " .. mode, 0, 250)
 end
 
 return game

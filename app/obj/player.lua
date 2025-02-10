@@ -20,7 +20,7 @@ function Player(init)
 
     --& Class Methods
 
-    local function move(delta)
+    function self:control(delta)
         if love.keyboard.isDown(keybinds.left) then
             -- x = x - speed * delta
             velocity.x = -1
@@ -30,9 +30,9 @@ function Player(init)
         else
             velocity.x = 0
         end
-
-        x = x + (velocity.x * speed) * delta
     end
+
+    local function move(delta) x = x + (velocity.x * speed) * delta end
 
     local function updateHitbox()
         hitbox.left = x
@@ -55,6 +55,8 @@ function Player(init)
     function self:getY() return y end
 
     function self:getVelocity() return velocity.x, velocity.y end
+
+    function self:setVelocity(newVelX, newVelY) velocity.x, velocity.y = newVelX, newVelY end
 
     function self:getSprite() return sprite end
 

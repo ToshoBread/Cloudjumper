@@ -10,7 +10,7 @@ local EXIT_BTN_SPRITE = love.graphics.newImage(res.images.exitBtnSprite)
 
 local buttons = {}
 
-table.insert(buttons, 1, Button({
+table.insert(buttons, Button({
     id = "play",
     x = VIRTUAL_WIDTH * 0.5 - (PLAY_BTN_SPRITE:getWidth() * 0.5),
     sprite = PLAY_BTN_SPRITE,
@@ -19,7 +19,7 @@ table.insert(buttons, 1, Button({
     onClick = function() scene:changeState("game") end
 }))
 
-table.insert(buttons, 2, Button({
+table.insert(buttons, Button({
     id = "settings",
     x = VIRTUAL_WIDTH * 0.5 - (SETTINGS_BTN_SPRITE:getWidth() * 0.5),
     sprite = SETTINGS_BTN_SPRITE,
@@ -27,7 +27,7 @@ table.insert(buttons, 2, Button({
     onClick = function() print("Settings") end
 }))
 
-table.insert(buttons, 3, Button({
+table.insert(buttons, Button({
     id = "exit",
     x = VIRTUAL_WIDTH * 0.5 - (EXIT_BTN_SPRITE:getWidth() * 0.5),
     sprite = EXIT_BTN_SPRITE,
