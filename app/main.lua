@@ -32,7 +32,7 @@ function love.load()
     cursorParticles:getEmitterLifetime(-1)
     emitCursorParticles = function() cursorParticles:emit(1) end
 
-    local FONT_SIZE = 20
+    FONT_SIZE = 20
     FONT = love.graphics.newFont(FONT_SIZE)
 
     debugMode = false

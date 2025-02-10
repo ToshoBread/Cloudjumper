@@ -53,10 +53,6 @@ function Ball(init)
             x = VIRTUAL_WIDTH - scale
             velocity.x = -velocity.x
         end
-        -- Top and Bottom Boundary
-        if (hitbox.bottom < 0 - 16) or (hitbox.top > VIRTUAL_HEIGHT + 16) then
-            self:resetBall()
-        end
     end
 
     local function randomVelocity(m, n)
@@ -83,7 +79,7 @@ function Ball(init)
 
     function self:getHitbox() return hitbox.left, hitbox.right, hitbox.top, hitbox.bottom end
 
-    function self:getVector() return velocity.x, velocity.y end
+    function self:getVelocity() return velocity.x, velocity.y end
 
     function self:setVelocity(newVelX, newVelY) velocity.x, velocity.y = newVelX, newVelY end
 

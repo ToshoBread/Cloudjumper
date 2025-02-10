@@ -10,6 +10,10 @@ local PLAYER_SPRITE = love.graphics.newImage(res.images.playerSprite)
 local singleplayer = true
 local playerSpeed = 1.25
 
+local player1Score = 0
+local player2Score = 0
+local SCORE_OFFSET = 16
+
 local ball = Ball({
     x = VIRTUAL_WIDTH * 0.5,
     y = VIRTUAL_WIDTH * 0.5,
@@ -42,16 +46,38 @@ local function checkCollision(a, b)
         and aBottom > bTop
 end
 
+local function checkVelocityCollision(a, b)
+    local aVelX, _ = a:getVelocity()
+    local bVelX, _ = b:getVelocity()
+
+    return (aVelX > 0 and bVelX < 0)
+        or (aVelX < 0 and bVelX > 0)
+end
+
+local function checkCornerCollision(a, b)
+    local CORNER = 3
+    local aLeft, aRight, _, _ = a:getHitbox()
+    local bLeft, bRight, _, _ = b:getHitbox()
+
+    return (aRight > bLeft and aRight < bLeft + CORNER)
+        or (aLeft < bRight and aLeft > bRight - CORNER)
+end
+
 local function paddleBounce(delta)
-    local ballVelX, ballVelY = ball:getVector()
-    local player1VelX, _ = player1:getVelocity()
-    local player2VelX, _ = player2:getVelocity()
+    local ballVelX, ballVelY = ball:getVelocity()
+
     if checkCollision(ball, player1) or checkCollision(ball, player2) then
-        if ((ballVelX > 0 and player1VelX < 0) or (ballVelX < 0 and player1VelX > 0))
-            or ((ballVelX > 0 and player2VelX < 0) or (ballVelX < 0 and player2VelX > 0)) then
+        if
+        -- Checks if the ball hits a moving paddle
+            checkVelocityCollision(ball, player1) or checkVelocityCollision(ball, player2)
+            -- Checks if the ball hits a paddle's corner
+            or checkCornerCollision(ball, player1) or checkCornerCollision(ball, player2)
+        then
+            -- if either are true, reverse the ball's X velocity
             ballVelX = -ballVelX
         end
 
+        -- Set the ball's Y just outside the hitbox of either paddle to avoid clipping
         if ballVelY > 0 then
             ball:setY(player1:getY() - ball:getHeight())
             ball:setVelocity(ballVelX, -ballVelY - 5)
@@ -65,7 +91,6 @@ end
 local function autoPilot(delta)
     local ballX, ballY = ball:getPosition()
     local player2X = player2:getX()
-    local player2VelX, _ = player2:getVelocity()
 
     if ballY > VIRTUAL_HEIGHT * 0.5 then
         player2:setVelocity(0, 0)
@@ -73,6 +98,18 @@ local function autoPilot(delta)
         player2:setVelocity(-1, 0)
     elseif ballX > player2X + player2:getWidth() + 8 then
         player2:setVelocity(1, 0)
+    end
+end
+
+local function scoreIncrement(delta)
+    local _, _, ballTop, ballBottom = ball:getHitbox()
+
+    if ballTop < -16 then -- Upper bounds
+        player2Score = player2Score + 1
+        ball:resetBall()
+    elseif ballBottom > VIRTUAL_HEIGHT + 16 then -- Lower Bounds
+        player1Score = player1Score + 1
+        ball:resetBall()
     end
 end
 
@@ -84,6 +121,7 @@ function game.update(delta)
     player2.update(delta)
 
     paddleBounce(delta)
+    scoreIncrement(delta)
 
     player1:control(delta)
     if singleplayer then
@@ -97,6 +135,12 @@ function game.draw()
     ball.draw()
     player1.draw()
     player2.draw()
+
+    love.graphics.setColor(255, 255, 255, 0.8)
+    love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
+    love.graphics.setFont(FONT)
+    love.graphics.print(player1Score, VIRTUAL_WIDTH * 0.5, (VIRTUAL_HEIGHT * 0.5) - FONT_SIZE - SCORE_OFFSET)
+    love.graphics.print(player2Score, VIRTUAL_WIDTH * 0.5, (VIRTUAL_HEIGHT * 0.5) + SCORE_OFFSET)
 end
 
 --^ Debug Functions
