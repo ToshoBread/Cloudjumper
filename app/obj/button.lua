@@ -42,7 +42,7 @@ function Button(init)
     local hovered = false
     local clicked = false
 
-    function self.update()
+    function self.update(delta)
         if self:hover() then
             if not hovered then
                 hovered = true

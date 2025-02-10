@@ -7,6 +7,7 @@ function Selector(init)
     local self = {}
 
     local id = init.id or ""
+    local label = init.label or ""
     local x = init.x or 0
     local y = init.y or 0
 
@@ -21,6 +22,7 @@ function Selector(init)
 
     local selectorFont = love.graphics.newFont(10)
     local valueDisplay = love.graphics.newText(selectorFont, currentValue)
+    local labelDisplay = love.graphics.newText(selectorFont, label)
 
 
     local buttons = {}
@@ -51,6 +53,8 @@ function Selector(init)
 
     --& Class Methods
 
+    function self:getId() return id end
+
     function self:getY() return y end
 
     function self:setY(newY) y = newY end
@@ -73,7 +77,9 @@ function Selector(init)
     end
 
     function self.draw()
-        love.graphics.draw(valueDisplay, x - valueDisplay:getWidth() / 100, y - valueDisplay:getHeight() * 0.25)
+        love.graphics.draw(labelDisplay, x * 0.05,
+            y - labelDisplay:getHeight() * 0.25)
+        love.graphics.draw(valueDisplay, x, y - valueDisplay:getHeight() * 0.25)
         for _, button in ipairs(buttons) do button.draw() end
     end
 
