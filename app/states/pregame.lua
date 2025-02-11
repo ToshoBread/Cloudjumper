@@ -63,7 +63,7 @@ local startBtn = Button({
 --* Render Functions
 
 function pregame.update(delta)
-    for _, selector in pairs(selectors) do selector.update() end
+    for _, selector in ipairs(selectors) do selector.update() end
 
     if selectors[1]:getValue() == "2 Players" then
         showDifficulty = false
@@ -72,6 +72,10 @@ function pregame.update(delta)
     end
 
     startBtn.update(delta)
+end
+
+function pregame.keypressed(key)
+
 end
 
 local TOP = 50

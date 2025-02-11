@@ -40,6 +40,10 @@ function menu.update(delta)
     for _, button in pairs(buttons) do button.update() end
 end
 
+function menu.keypressed(key)
+
+end
+
 local TOP = 70
 local MARGIN = 15
 function menu.draw()

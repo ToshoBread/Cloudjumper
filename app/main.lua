@@ -21,7 +21,7 @@ function love.load()
 
     CURSOR_SIZE = 5
     drawCursor = function() love.graphics.circle("fill", mouseX, mouseY, CURSOR_SIZE) end
-    cursorParticles = love.graphics.newParticleSystem(love.graphics.newImage(res.images.particle), 25)
+    cursorParticles = love.graphics.newParticleSystem(love.graphics.newImage(res.images.particle), 20)
     cursorParticles:setParticleLifetime(1, 2.5)
     cursorParticles:setLinearAcceleration(-0.5, -0.5, 0.5, 0.5)
     local opaqueToTransparent = function() return 1, 1, 1, 1, 1, 1, 1, 0 end
@@ -74,11 +74,13 @@ function love.keypressed(key)
         end
     end
 
-    if scene.state.game and key == "backspace" then
-        scene:changeState("lose")
-    end
-
-    if scene.state.lose and key == "return" then
+    if scene.state.menu then
+        menu.keypressed(key)
+    elseif scene.state.pregame then
+        pregame.keypressed(key)
+    elseif scene.state.game then
+        game.keypressed(key)
+    elseif scene.state.lose and key == "return" then
         scene:changeState("game")
     end
 

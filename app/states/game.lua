@@ -12,7 +12,11 @@ local playerSpeed = 1.25
 
 local player1Score = 0
 local player2Score = 0
-local SCORE_OFFSET = 16
+local SCORE_OFFSET = 12
+
+local scoreFont = love.graphics.newFont(21)
+local player1ScoreDisplay = love.graphics.newText(scoreFont, player1Score)
+local player2ScoreDisplay = love.graphics.newText(scoreFont, player2Score)
 
 local ball = Ball({
     x = VIRTUAL_WIDTH * 0.5,
@@ -105,9 +109,11 @@ local function scoreIncrement(delta)
 
     if ballBottom < -16 then -- Upper bounds
         player2Score = player2Score + 1
+        player2ScoreDisplay:set(player2Score)
         ball:resetBall()
     elseif ballTop > VIRTUAL_HEIGHT + 16 then -- Lower bounds
         player1Score = player1Score + 1
+        player1ScoreDisplay:set(player1Score)
         ball:resetBall()
     end
 end
@@ -138,16 +144,27 @@ function game.draw()
     love.graphics.setColor(255, 255, 255, 0.8)
     love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
     love.graphics.setFont(FONT)
-    love.graphics.print(player1Score, VIRTUAL_WIDTH * 0.5, (VIRTUAL_HEIGHT * 0.5) - FONT_SIZE - SCORE_OFFSET)
-    love.graphics.print(player2Score, VIRTUAL_WIDTH * 0.5, (VIRTUAL_HEIGHT * 0.5) + SCORE_OFFSET)
+    love.graphics.draw(player1ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - player1ScoreDisplay:getWidth() * 0.5,
+        (VIRTUAL_HEIGHT * 0.5) - FONT_SIZE - SCORE_OFFSET)
+    love.graphics.draw(player2ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - player2ScoreDisplay:getWidth() * 0.5,
+        (VIRTUAL_HEIGHT * 0.5) + SCORE_OFFSET)
 end
 
 --^ Debug Functions
+function game.keypressed(key)
+    if key == "p" then
+        singleplayer = not singleplayer
+    end
+
+    if key == "return" then
+        scene:changeState("lose")
+    end
+end
+
 function game.debug()
     player1.debug()
     ball.debug()
 
-    if love.keyboard.isDown("p") then singleplayer = not singleplayer end
     love.graphics.setFont(FONT)
     local mode = singleplayer and "Singleplayer" or "Multiplayer"
     love.graphics.print("Mode: " .. mode, 0, 250)
