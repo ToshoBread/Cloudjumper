@@ -3,6 +3,7 @@ push = require "lib.public.push"
 res = require "res.dir"
 vector = require "lib.public.vector"
 scene = require "states.stateManager"
+util = require "utils"
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest") --? Removes Antialiasing
@@ -126,10 +127,10 @@ function love.draw()
         lose.draw()
     end
 
-    if debugMode then
-        love.graphics.setColor(255, 255, 255, 0.8)
-        love.graphics.line(VIRTUAL_WIDTH * 0.5, 0, VIRTUAL_WIDTH * 0.5, VIRTUAL_HEIGHT)
-        love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
-    end
+    -- if debugMode then
+    --     love.graphics.setColor(255, 255, 255, 0.8)
+    --     love.graphics.line(VIRTUAL_WIDTH * 0.5, 0, VIRTUAL_WIDTH * 0.5, VIRTUAL_HEIGHT)
+    --     love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
+    -- end
     push:finish()
 end

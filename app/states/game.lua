@@ -5,9 +5,11 @@ scene:addState("game")
 
 game = {}
 
+--#region --? Variables
 local PLAYER_SPRITE = love.graphics.newImage(res.images.playerSprite)
 
-local singleplayer = true
+local ballSensorDistance = 0
+local ballAcceleration = 100
 local playerSpeed = 1.25
 
 local player1Score = 0
@@ -17,11 +19,12 @@ local SCORE_OFFSET = 12
 local scoreFont = love.graphics.newFont(21)
 local player1ScoreDisplay = love.graphics.newText(scoreFont, player1Score)
 local player2ScoreDisplay = love.graphics.newText(scoreFont, player2Score)
+--#endregion
 
 local ball = Ball({
     x = VIRTUAL_WIDTH * 0.5,
     y = VIRTUAL_WIDTH * 0.5,
-    acceleration = 100,
+    acceleration = ballAcceleration,
     scale = 6
 })
 
@@ -40,6 +43,8 @@ local player2 = Player({
     sprite = PLAYER_SPRITE,
     keybinds = { left = "left", right = "right" }
 })
+
+--#region --~ State functions
 
 local function checkCollision(a, b)
     local aLeft, aRight, aTop, aBottom = a:getHitbox()
@@ -95,7 +100,7 @@ local function autoPilot(delta)
     local ballX, ballY = ball:getPosition()
     local player2X = player2:getX()
 
-    if ballY > VIRTUAL_HEIGHT * 0.5 then
+    if ballY > ballSensorDistance then
         player2:setVelocity(0, 0)
     elseif ballX < player2X - 8 then
         player2:setVelocity(-1, 0)
@@ -117,6 +122,7 @@ local function scoreIncrement(delta)
         ball:resetBall()
     end
 end
+--#endregion
 
 --* Render Functions
 
@@ -128,8 +134,19 @@ function game.update(delta)
     paddleBounce(delta)
     scoreIncrement(delta)
 
+    ball:setAcceleration(ball:getAcceleration() * gamerules:getBallSpeedMultiplier())
+    player1:setSpeed(player1:getSpeed() * gamerules:getPaddleSpeedMultipler())
+    player2:setSpeed(player2:getSpeed() * gamerules:getPaddleSpeedMultipler())
+
+    ballSensorDistance = VIRTUAL_HEIGHT * 0.5
+    util:switch(gamerules:getDifficulty()) {
+        easy = function() ballSensorDistance = VIRTUAL_HEIGHT * 0.4 end,
+        moderate = function() ballSensorDistance = VIRTUAL_HEIGHT * 0.5 end,
+        hard = function() ballSensorDistance = VIRTUAL_HEIGHT * 0.8 end
+    }
+
     player1:control(delta)
-    if singleplayer then
+    if gamerules:getPlayersNumberState() then
         autoPilot(delta)
     else
         player2:control(delta)
@@ -144,18 +161,20 @@ function game.draw()
     love.graphics.setColor(255, 255, 255, 0.8)
     love.graphics.line(0, VIRTUAL_HEIGHT * 0.5, VIRTUAL_WIDTH, VIRTUAL_HEIGHT * 0.5)
     love.graphics.setFont(FONT)
-    love.graphics.draw(player1ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - player1ScoreDisplay:getWidth() * 0.5,
+    love.graphics.draw(player1ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - (player1ScoreDisplay:getWidth() * 0.5),
         (VIRTUAL_HEIGHT * 0.5) - FONT_SIZE - SCORE_OFFSET)
-    love.graphics.draw(player2ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - player2ScoreDisplay:getWidth() * 0.5,
+    love.graphics.draw(player2ScoreDisplay, (VIRTUAL_WIDTH * 0.5) - (player2ScoreDisplay:getWidth() * 0.5),
         (VIRTUAL_HEIGHT * 0.5) + SCORE_OFFSET)
+
+    if debugMode then
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.line(0, ballSensorDistance, VIRTUAL_WIDTH, ballSensorDistance)
+        love.graphics.setColor(255, 255, 255)
+    end
 end
 
 --^ Debug Functions
 function game.keypressed(key)
-    if key == "p" then
-        singleplayer = not singleplayer
-    end
-
     if key == "return" then
         scene:changeState("lose")
     end
@@ -166,8 +185,12 @@ function game.debug()
     ball.debug()
 
     love.graphics.setFont(FONT)
-    local mode = singleplayer and "Singleplayer" or "Multiplayer"
-    love.graphics.print("Mode: " .. mode, 0, 250)
+    local mode = gamerules:getPlayersNumberState() and "Singleplayer" or "Multiplayer"
+    love.graphics.print("Mode: " .. mode, 0, 225)
+    love.graphics.print(string.format("Difficulty: %s\nSensorY: %d", gamerules:getDifficulty(), ballSensorDistance), 0,
+        250)
+    love.graphics.print("Ball Speed: " .. gamerules:getBallSpeedMultiplier() .. "x", 0, 300)
+    love.graphics.print("Ball Speed: " .. gamerules:getPaddleSpeedMultipler() .. "x", 0, 325)
 end
 
 return game

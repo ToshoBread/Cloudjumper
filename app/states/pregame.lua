@@ -34,7 +34,7 @@ table.insert(selectors, Selector({
 }))
 
 table.insert(selectors, Selector({
-    id = "ballSpeed",
+    id = "ballSpeedMultiplier",
     label = "Ball Speed",
     x = selectorPosX,
     width = 6,
@@ -43,7 +43,7 @@ table.insert(selectors, Selector({
 }))
 
 table.insert(selectors, Selector({
-    id = "paddleSpeed",
+    id = "paddleSpeedMultiplier",
     label = "Paddle Speed",
     x = selectorPosX,
     width = 6,
@@ -95,14 +95,36 @@ function pregame.draw()
     for _, selector in ipairs(selectors) do
         selector:setY(VIRTUAL_HEIGHT * (TOP / 100) - (totalHeight * 0.5) + offset)
 
+        -- Displays all selectors except the diffculty selector
         if selector:getId() ~= "difficulty" then
             selector.draw()
             offset = offset + (averageSelectorHeight + MARGIN)
         end
 
-        if selector:getId() == "difficulty" and showDifficulty then
-            selector.draw()
-            offset = offset + (averageSelectorHeight + MARGIN)
+        -- Display the difficulty selector only if singleplayer is chosen
+        if selector:getId() == "difficulty" then
+            if showDifficulty then
+                selector.draw()
+                offset = offset + (averageSelectorHeight + MARGIN)
+            end
+
+            gamerules:setDifficulty(string.lower(selector:getValue()))
+        end
+
+        if selector:getId() == "players" then
+            if selector:getValue() == "1 Player" then
+                gamerules:setToSingleplayer()
+            else
+                gamerules:setToMultiplayer()
+            end
+        end
+
+        if selector:getId() == "ballSpeedMultiplier" then
+            gamerules:setBallSpeedMultiplier(tonumber(string.sub(selector:getValue(), 1, 1)))
+        end
+
+        if selector:getId() == "paddleSpeedMultiplier" then
+            gamerules:setPaddleSpeedMultiplier(tonumber(string.sub(selector:getValue(), 1, 1)))
         end
     end
 

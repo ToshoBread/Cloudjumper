@@ -4,7 +4,7 @@ function Ball(init)
     local x = init.x or 0
     local y = init.y or 0
     local velocity = vector.new(0, 0)
-    local acceleration = init.acceleration or 1
+    local acceleration = init.acceleration or 100
 
     local scale = init.scale or 1
 
@@ -69,6 +69,10 @@ function Ball(init)
     function self:getVelocity() return velocity.x, velocity.y end
 
     function self:setVelocity(newVelX, newVelY) velocity.x, velocity.y = newVelX, newVelY end
+
+    function self:getAcceleration() return acceleration end
+
+    function self:setAcceleration(newAcceleration) acceleration = newAcceleration end
 
     --* Render Functions
 

@@ -54,6 +54,10 @@ function Player(init)
 
     function self:getY() return y end
 
+    function self:getSpeed() return speed end
+
+    function self:setSpeed(newSpeed) speed = newSpeed end
+
     function self:getVelocity() return velocity.x, velocity.y end
 
     function self:setVelocity(newVelX, newVelY) velocity.x, velocity.y = newVelX, newVelY end
@@ -82,8 +86,8 @@ function Player(init)
 
     --^ Debug Functions
     function self.debug()
-        love.graphics.print(string.format("Player Pos.\nX:%d\tY:%d", x, y), 0, 300)
-        love.graphics.print(string.format("Player Hitbox\nRight:%d\tBottom:%d", hitbox.right, hitbox.bottom), 0, 350)
+        love.graphics.print(string.format("Player Pos.\nX:%d\tY:%d", x, y), 0, 350)
+        love.graphics.print(string.format("Player Speed: %d", speed), 0, 400)
     end
 
     return self
